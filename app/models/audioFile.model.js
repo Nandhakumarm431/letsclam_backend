@@ -14,6 +14,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         fileUrl:{
             type:Sequelize.STRING
+        },
+        isGeneric:{
+            type:Sequelize.BOOLEAN
         }
     })
     return AudioFile

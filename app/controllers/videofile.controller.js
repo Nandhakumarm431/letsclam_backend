@@ -2,12 +2,13 @@ const db = require('../models');
 const VideoFileDB = db.videoFiles;
 const logger = require('../logger/logger');
 const axios = require('axios');
+const { Op } = require('sequelize');
 
 exports.uploadVideo = async (req, res) => {
     try {
         const { user_id, description, title, videoType } = req.body;
         const file = req.file;
-        
+
 
         if (!user_id) {
             logger.warn('Upload attempt without user_id');
@@ -43,7 +44,12 @@ exports.getVideoFilesByUser = async (req, res) => {
     try {
         const { user_id } = req.params;
         const videoFiles = await VideoFileDB.findAll({
-            where: { userId: user_id },
+            where: {
+                [Op.or]: [
+                    { userId: user_id },
+                    { isGeneric: true }
+                ]
+            },
         });
         if (!videoFiles.length) {
             logger.info(`No video files found for user ${user_id}`);

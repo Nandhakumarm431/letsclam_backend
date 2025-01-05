@@ -2,6 +2,7 @@ const db = require('../models')
 const AudioFileDB = db.audioFiles;
 const logger = require('../logger/logger');
 const axios = require('axios');
+const { Op } = require('sequelize');
 
 
 exports.uploadAudio = async (req, res) => {
@@ -44,7 +45,12 @@ exports.getAudioFilesByUser = async (req, res) => {
     const { user_id } = req.params;
 
     const audioFiles = await AudioFileDB.findAll({
-      where: { userId: user_id },
+      where: { 
+        [Op.or]: [
+          { userId: user_id },  
+          { isGeneric: true }   
+        ]
+       },
       // attributes: ['fileName', 'fileUrl', 'description']
     });
 
